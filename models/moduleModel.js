@@ -21,6 +21,22 @@ const moduleSchema = new mongoose.Schema({
   parentId: {
     type: String,
     required: false
+  },
+  title: {
+    type: String,
+    required: false
+  },
+  description: {
+    type: String,
+    required: false
+  },
+  workingHours: {
+    start: {
+      type: String,
+    },
+    end: {
+      type: String,
+    }
   }
 });
 

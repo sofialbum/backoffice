@@ -1,10 +1,10 @@
 const Module = require("../models/moduleModel");
 
 exports.createModule = async (req, res) => {
-  const { id, active, componentName, children } = req.body;
+  const { id, active, componentName, children, title, description } = req.body;
 
   try {
-    await Module.create({ id, active, componentName, children });
+    await Module.create({ id, active, componentName, children, title, description });
 
     res.status(201).json({
       status: "success",
@@ -20,20 +20,26 @@ exports.createModule = async (req, res) => {
 
 exports.getComponentName = async (req, res) => {
   try {
-    const { componentName, id } = await Module.findOne({
+    const { componentName, id, title, description, workingHours, active } = await Module.findOne({
       id: req.params.id,
     })
 
     const childrenModules = await Module.find({parentId: id}) || [];
 
     const children = childrenModules.map(child => child.id)
+
+    const isWithinHours = isWithinWorkingHours(workingHours.start, workingHours.end);
   
     // TODO: REALIZAR VALIDACIONES.
 
     res.status(201).json({
       status: "success",
       componentName,
-      children     
+      children, 
+      title,
+      description,
+      isWithinHours,
+      active
     });
   } catch (err) {
     res.status(400).json({
@@ -47,12 +53,12 @@ exports.getModules = async (req, res) => {
   try {
     const data = await Module.find();
 
-    await migrationDB(data);
-
-
+    // await migrationDB(data);
+    await updateWorkingHours(data);
 
     res.status(201).json({
       status: "success",
+      data
     });
   } catch (err) {
     res.status(400).json({
@@ -76,3 +82,35 @@ async function migrationDB(data) {
   }
 }
 
+async function updateWorkingHours(data) {
+  if (data.length) {
+    data.forEach( async (module) => {
+      const start = "08:00";
+      const end = "18:00";
+
+      await Module.findOneAndUpdate({ _id: module._id}, {workingHours: {start, end}});
+    })
+  }
+}
+
+function isWithinWorkingHours(start, end) {
+  const now = new Date();
+  const currentHour = now.getHours();
+  const currentMinute = now.getMinutes();
+  
+  const [startHour, startMinute] = start.split(":").map(Number);
+  const [endHour, endMinute] = end.split(":").map(Number);
+
+  if (currentHour < startHour || (currentHour === startHour && currentMinute < startMinute)) {
+    // La hora actual es anterior al inicio del horario de funcionamiento
+    return false;
+  }
+
+  if (currentHour > endHour || (currentHour === endHour && currentMinute >= endMinute)) {
+    // La hora actual es posterior al final del horario de funcionamiento
+    return false;
+  }
+
+  // La hora actual está dentro del horario de funcionamiento
+  return true;
+}
