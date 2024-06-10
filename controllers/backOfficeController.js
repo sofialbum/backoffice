@@ -98,8 +98,8 @@ function isWithinWorkingHours(start, end) {
   const currentHour = now.getHours();
   const currentMinute = now.getMinutes();
   
-  const [startHour, startMinute] = start.split(":").map(Number);
-  const [endHour, endMinute] = end.split(":").map(Number);
+  const [startHour, startMinute] = start.split(":").map((num)=>Number(num));
+  const [endHour, endMinute] = end.split(":").map((num)=>Number(num));
 
   if (currentHour < startHour || (currentHour === startHour && currentMinute < startMinute)) {
     // La hora actual es anterior al inicio del horario de funcionamiento
