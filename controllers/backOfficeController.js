@@ -20,16 +20,20 @@ exports.createModule = async (req, res) => {
 
 exports.getComponentName = async (req, res) => {
   try {
-    const { componentName } = await Module.findOne({
+    const { componentName, id } = await Module.findOne({
       id: req.params.id,
     })
 
+    const childrenModules = await Module.find({parentId: id}) || [];
+
+    const children = childrenModules.map(child => child.id)
+  
     // TODO: REALIZAR VALIDACIONES.
 
     res.status(201).json({
       status: "success",
       componentName,
-      children,
+      children     
     });
   } catch (err) {
     res.status(400).json({
@@ -44,6 +48,8 @@ exports.getModules = async (req, res) => {
     const data = await Module.find();
 
     await migrationDB(data);
+
+
 
     res.status(201).json({
       status: "success",
