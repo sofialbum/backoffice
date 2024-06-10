@@ -11,7 +11,16 @@ const moduleSchema = new mongoose.Schema({
   componentName: {
     type: String,
     required: [true, "a component name is required"],
-    unique: true
+    unique: true,
+  },
+  children: [
+    {
+      type: String,
+    },
+  ],
+  parentId: {
+    type: String,
+    required: false
   }
 });
 

@@ -7,6 +7,8 @@ router.post('/', backOfficeController.createModule);
 
 router.get('/:id', backOfficeController.getComponentName);
 
+router.get('/', backOfficeController.getModules);
+
 
 
 module.exports = router;
