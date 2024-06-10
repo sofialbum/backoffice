@@ -9,10 +9,4 @@ router.get('/:id', backOfficeController.getComponentName);
 
 router.get('/', backOfficeController.getModules);
 
-
-
-
-
-
-
 module.exports = router;
