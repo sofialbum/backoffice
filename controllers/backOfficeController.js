@@ -30,8 +30,6 @@ exports.getComponentName = async (req, res) => {
 
     const isWithinHours = isWithinWorkingHours(workingHours.start, workingHours.end);
   
-    // TODO: REALIZAR VALIDACIONES.
-
     res.status(201).json({
       status: "success",
       componentName,
@@ -54,7 +52,7 @@ exports.getModules = async (req, res) => {
     const data = await Module.find();
 
     // await migrationDB(data);
-    await updateWorkingHours(data);
+    // await updateWorkingHours(data);
 
     res.status(201).json({
       status: "success",
