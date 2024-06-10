@@ -84,7 +84,7 @@ async function updateWorkingHours(data) {
   if (data.length) {
     data.forEach( async (module) => {
       const start = "08:00";
-      const end = "18:00";
+      const end = "20:00";
 
       await Module.findOneAndUpdate({ _id: module._id}, {workingHours: {start, end}});
     })
